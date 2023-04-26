@@ -139,12 +139,16 @@ input.onPinPressed(TouchPin.P1, function () {
     music.setVolume(music.volume() - 16)
 })
 function snake () {
+    led.unplot(lista.shift(), lista.shift())
     snakex += snakedirx
     snakey += snakediry
+    lista.push(snakex)
+    lista.push(snakey)
     led.plot(snakex, snakey)
 }
 let snakey = 0
 let snakex = 0
+let lista: number[] = []
 let snakedirx = 0
 let snakediry = 0
 let snakedir = 0
@@ -165,6 +169,7 @@ basic.forever(function () {
         snakex = 1
         snakey = 2
         game2 += 1
+        lista = [snakex, snakey]
     } else {
     	
     }
