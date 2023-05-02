@@ -171,6 +171,20 @@ function snake () {
     if (led.pointBrightness(applex, appley) < 16) {
         led.plotBrightness(applex, appley, 16)
     }
+    led.unplot(oldsnakepos.shift(), oldsnakepos.shift())
+    snakex += snakedirx
+    snakey += snakediry
+    oldsnakepos.push(snakex)
+    oldsnakepos.push(snakey)
+    if (!(snakex < 0 || snakex > 4 || (snakey < 0 || snakey > 4))) {
+        if (led.pointBrightness(snakex, snakey) != 255) {
+            led.plot(snakex, snakey)
+        } else {
+            gamestate = 3
+        }
+    } else {
+        gamestate = 3
+    }
     if (snakex == applex && snakey == appley) {
         control.raiseEvent(
         EventBusSource.MICROBIT_ID_IO_P1,
@@ -179,22 +193,8 @@ function snake () {
         applex = randint(0, 4)
         appley = randint(0, 4)
         led.plotBrightness(applex, appley, 16)
-        oldsnakepos.push(snakex)
-        oldsnakepos.push(snakey)
-    }
-    if (!(snakex < 0 || snakex > 4 || (snakey < 0 || snakey > 4))) {
-        led.unplot(oldsnakepos.shift(), oldsnakepos.shift())
-        snakex += snakedirx
-        snakey += snakediry
-        oldsnakepos.push(snakex)
-        oldsnakepos.push(snakey)
-        if (led.pointBrightness(snakex, snakey) != 255) {
-            led.plot(snakex, snakey)
-        } else {
-            gamestate = 3
-        }
-    } else {
-        gamestate = 3
+        oldsnakepos.insertAt(0, oldsnakepos[0])
+        oldsnakepos.insertAt(1, oldsnakepos[1])
     }
 }
 control.onEvent(EventBusSource.MICROBIT_ID_IO_P1, EventBusValue.MICROBIT_EVT_ANY, function () {
@@ -207,9 +207,9 @@ control.onEvent(EventBusSource.MICROBIT_ID_IO_P1, EventBusValue.MICROBIT_EVT_ANY
     music.rest(1)
 })
 let sfx = 0
-let oldsnakepos: number[] = []
 let snakey = 0
 let snakex = 0
+let oldsnakepos: number[] = []
 let appley = 0
 let applex = 0
 let snakediry = 0
@@ -218,7 +218,7 @@ let snakedir = 0
 let pause2 = 0
 let gamestate = 0
 music.stopAllSounds()
-music.setVolume(127)
+music.setVolume(255)
 gamestate = 0
 pause2 = 0
 basic.forever(function () {
@@ -248,7 +248,7 @@ basic.forever(function () {
         basic.showLeds(`
             . # # # .
             # . # . #
-            . # . # .
+            # # . # #
             . # # # .
             . # . # .
             `)
